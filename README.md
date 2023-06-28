@@ -165,3 +165,55 @@ sudo apt remove --purge opensand* libopensand* librle libgse
 ```
 
 Be careful not to execute the command while on an OpenSAND folder (uninstall may try to remove said folder).
+
+## Deploy 
+L'architettura può essere vista come l'insieme di due componenti :
+- [un client react](https://github.com/CNES/opensand/tree/ffda4b2e7547cfbfaf1a457a07a38df3d947aedb/opensand-deploy/src/frontend)
+- [un server python](https://github.com/CNES/opensand/blob/ffda4b2e7547cfbfaf1a457a07a38df3d947aedb/opensand-deploy/src/backend/backend.py)
+  
+Il client reat offre l'interfaccia grafica per la configurazione dei vari parametri. La configurazione dei parametri a livello grafico si traduce nella creazione di xml di configurazione che dovranno essere inviati al server. Possono essere creati diverse tipologie di xml:
+1. infrastructure
+2. topology
+3. profile
+   
+E' possibile creare questi tre file di configurazione per le tre diverse entità:
+1. gateway
+2. sat
+3. st
+
+Il server offre una serie di API per salvare, modificare e eliminare file di configurazioni. Ha inoltre la responsabilità di inoltrare i file di configurazione(tramite ssh)alle macchine virtuali che ospitano le varie entità (gw,sat,st). La comunicazione tra client e server avviene tramite HTTP.
+
+![opensatRange drawio](https://github.com/CNES/opensand/assets/80633764/da1d286e-fa89-4400-b34e-89316c468052)
+
+### Server
+Il server prima di inoltrare gli xml alle macchine virtuali li salva in locale in una directory configurabile al momento del lancio del server. Il server riceve dal client gli xml gia pronti, per cui le funzionalità che offre vanno a modificare/aggiungere/eliminare i file mantenuti nella directory di lavoro.
+Le api piu importanti offerte dal server sono :
+- gestione profile.xml -> **/api/project/<string:name>/profile/<string:entity>**
+- gestione topology.xml ->  **/api/project/<string:name>/topology**
+- gestione infrastructure.xml -> **/api/project/<string:name>/infrastructure/<string:entity>**
+
+### Client
+La creazione e modifica degli xml da parte del client avviene in due fasi :
+1. Il client contatta il server e chiede l'xml che ha intenzione di modificare. Tale xml può essere o un template creato dal server in fase di inizializzazione o un xml creato dal client in precedenza.
+2. L'utente modifica tramite interfaccia grafica i parametri dell'xml e riinviare al server la nuova versione del file di configurazione.
+
+Si noti come la comunicazione tra client e server avviene tramite scambio di interi xml. E' quindi responsabilità del client generare la versione aggiornata del file e inviarla al server il quale provvederà a scaricare il file e salvarlo in una directory locale prima di inoltrarlo.
+In particolare la generazione dei file di configurazione del client avviene tramite vari componenti react. Il flusso di esecuzione è il seguente:. 
+
+- il client [scarica](https://github.com/CNES/opensand/blob/ffda4b2e7547cfbfaf1a457a07a38df3d947aedb/opensand-deploy/src/frontend/src/components/Editor/Editor.tsx#L32C1-L32C64) dal server il file che vuole modificare 
+- l'xml è convertito in un oggetto denominato model
+- l'oggetto model è dato in ingresso ad un componente denominato [formik](https://github.com/CNES/opensand/blob/ffda4b2e7547cfbfaf1a457a07a38df3d947aedb/opensand-deploy/src/frontend/src/components/Editor/Model.tsx#L68C13-L83C22)
+- formik converte il model in un form modificabile tramite interfaccia grafica
+- quando l'utente modifica un parametro del form  tramite l'invocazione di callback viene aggiornato il model
+- quando è schiacciato il pulsante "save as template" il model è riconvertito in xml e [inviato al server](https://github.com/CNES/opensand/blob/ffda4b2e7547cfbfaf1a457a07a38df3d947aedb/opensand-deploy/src/frontend/src/components/Editor/SaveAsButton.tsx#L33)
+
+La creazione degli xml avviene pertanto in maniera decentralizzata tramite invocazione di callback che vengono gestite da un componente react.
+
+![opensatRange drawio(2)](https://github.com/CNES/opensand/assets/80633764/1c4d2b43-e461-464a-b2b6-85f496cf6d4a)
+
+### Proposta
+Il fatto che la generazione dei form venga demandata a un componente controllabile solo tramite interfaccia grafica rende difficile realizzare una configurazione dei parametri in modo agevole. L'dea è quindi quella di dividere l'interfaccia grafica in due sezioni: una basata sul drag and drop (che permette di configurare un sottoinsieme di parametri piu importanti)e un altra che offre una configurazione più dettagliata  basata su opensand. La parte di interfaccia basata su drag and drop deve a sua volta basarsi su un componente *centralizzato* che offre una serie di funzionalità per la generazioni di nuovi xml senza passare per il componente formik. Tuttavia viene comunque mantenuta la possibilità di realizzare configurazioni molto più dettagliate cliccando un bottone che apre l'interfaccia grafica di opensand integrata nella gui finale del progetto.
+
+![osm drawio](https://github.com/CNES/opensand/assets/80633764/9f3d55c2-1500-4904-a17d-7dc38e58e95c)
+
+
