@@ -216,4 +216,30 @@ Il fatto che la generazione dei form venga demandata a un componente controllabi
 
 ![osm drawio](https://github.com/CNES/opensand/assets/80633764/9f3d55c2-1500-4904-a17d-7dc38e58e95c)
 
+## Grafana
+## Installazione
+```c 
+
+sudo apt-get install -y apt-transport-https
+sudo apt-get install -y software-properties-common wget
+sudo wget -q -O /usr/share/keyrings/grafana.key https://apt.grafana.com/gpg.key
+echo "deb [signed-by=/usr/share/keyrings/grafana.key] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+echo "deb [signed-by=/usr/share/keyrings/grafana.key] https://apt.grafana.com beta main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+sudo apt-get update
+sudo apt-get install grafana
+  
+```
+
+A questo punto puoi visitare la pagina localhost:3000
+
+## Esportazione grafici
+Modifica il file /etc/grafana/grafana.ini in modo da attivare l'export della dashboard. Modificare i due campi:
+- allow_embedding
+  
+  ![Schermata del 2023-07-05 09-54-21](https://github.com/lucaFiscariello/opensand/assets/80633764/b3158b80-aa2b-4fc1-b36a-07504bf0d803)
+
+  
+- anonymous access
+  
+  ![Schermata del 2023-07-05 09-54-44](https://github.com/lucaFiscariello/opensand/assets/80633764/81453bb4-0be1-4b1b-ab51-09a4fc375083)
 
