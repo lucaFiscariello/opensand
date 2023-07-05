@@ -243,3 +243,178 @@ Modifica il file /etc/grafana/grafana.ini in modo da attivare l'export della das
   
   ![Schermata del 2023-07-05 09-54-44](https://github.com/lucaFiscariello/opensand/assets/80633764/81453bb4-0be1-4b1b-ab51-09a4fc375083)
 
+## API Grafana
+### Creare l'organizzazione. 
+La chiamata all'api restituisce l'id dell'organizzazione.
+```c 
+  curl -X POST -H "Content-Type: application/json" -d '{"name":"apiorg"}' http://admin:admin@localhost:3000/api/orgs
+```
+
+### Cambiare contesto nella nuova organizzazione.
+```c 
+  curl -X POST http://admin:admin@localhost:3000/api/user/using/<id of new org>
+```
+
+### Creazione TokenAPI.
+```c 
+  curl -X POST -H "Content-Type: application/json" -d '{"name":"apikeycurl", "role": "Admin"}' http://admin:admin@localhost:3000/api/auth/keys
+```
+
+### Crazione nuova Dasboard.
+Sostituire a '..' il json della dasboard esportato. Viene mostrato un esempio.
+```c
+  
+  curl -X POST -H "Content-Type: application/json" -d '..' http://localhost:3000/api/dashboards/db
+
+
+  {
+    "dashboard": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "datasource": {
+          "type": "grafana",
+          "uid": "grafana"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": null,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
+            },
+            "queryType": "randomWalk",
+            "refId": "A"
+          }
+        ],
+        "title": "Panel Title",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [
+      "templated"
+    ],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Provaa",
+    "uid": null,
+    "version": 1,
+    "weekStart": ""
+  }
+  }
+```
+
+Per creare una dashboard bisogna prima creare un template a mano tramite l'interfaccia grafica e poi esportare il json del template in modo che dalle API lo si possa ricreare in maniera identica. Per esportare il json andare : 
+
+$$Dasboard -> tastoCondivisione -> Export$$
+
+![Schermata del 2023-07-05 10-06-49](https://github.com/lucaFiscariello/opensand/assets/80633764/9933ccee-7e8d-493c-aea2-096d3950b17b)
+
+
+
+
+
+
+
+
