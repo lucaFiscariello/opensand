@@ -411,6 +411,13 @@ $$Dasboard -> tastoCondivisione -> Export$$
 
 ![Schermata del 2023-07-05 10-06-49](https://github.com/lucaFiscariello/opensand/assets/80633764/9933ccee-7e8d-493c-aea2-096d3950b17b)
 
+## Generazione xml
+Per la generazione degli xml è possibile usare in maniera combinata due classi di opensand:
+- **opensand/opensand-conf/src/Configuration.cpp** (versione >= 6.0) : genera gli schemi degli xml topology, profile e infrastructure
+- **opensand-manager/opensand_manager_core/opensand_xml_parser.py** (versione 5.2) : modifica un xml a partire dal suo schema. E' possibile modificare o aggiungere elementi.
+
+La classe *test.py* nella root del repository mostra come è possibile usare gli schemi e i metodi della classe opensand_xml_parser per modificare gli xml. Attualmente gli xsd generati sono nella directory *opensand-deploy/src/frontend/src/xsd*. Invece la classe di test che sfrutta i metodi implementati da *opensand/opensand-conf/src/Configuration.cpp* è *opensand-core/src/sat_carrier/tests/test.cpp* con l'invocazione del metodo *createModels()*.
+
 
 
 
