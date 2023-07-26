@@ -418,6 +418,8 @@ Per la generazione degli xml è possibile usare in maniera combinata due classi 
 
 La classe *test.py* nella root del repository mostra come è possibile usare gli schemi e i metodi della classe opensand_xml_parser per modificare gli xml. Attualmente gli xsd generati sono nella directory *opensand-deploy/src/frontend/src/xsd*. Invece la classe di test che sfrutta i metodi implementati da *opensand/opensand-conf/src/Configuration.cpp* è *opensand-core/src/sat_carrier/tests/test.cpp* con l'invocazione del metodo *createModels()*.
 
+# Kypo
+Per l'installazione seguire la guida a https://gitlab.ics.muni.cz/muni-kypo-crp/devops/kypo-lite. Per creare una demo seguire la guida https://www.youtube.com/watch?v=9F-m1YDoRtY&t=1003s a partire dal minuto 18.
 
 
 
