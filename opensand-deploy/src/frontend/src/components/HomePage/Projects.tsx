@@ -18,6 +18,7 @@ import ProjectCard, {LargeCard} from './ProjectCard';
 
 import {deleteProject, listProjects} from '../../api';
 import {useSelector, useDispatch} from '../../redux';
+import Network from './Network';
 
 
 const Root = styled('div')({

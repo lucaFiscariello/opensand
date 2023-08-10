@@ -1,0 +1,55 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5; /* Grigio chiaro */
+}
+
+.white-box {
+    width: max-content; /* Utilizza min-content o max-content */
+    height: auto;
+    background-color: white;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    
+  }
+
+.box-button {
+  display: block;
+  width: 200px; /* Utilizza min-content o max-content */
+  height: 500px;
+  background-color: white;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.main-container{
+  display: flex;
+  grid-template-columns: 1fr 1fr; /* Due colonne con larghezza uguale */
+  gap: 10px; /* Spazio tra i div */
+  justify-content: center; /* Centra i div orizzontalmente */
+  align-items: center; /* Centra i div verticalmente */
+  height: 100vh;
+}
+
+
+.button {
+  display: block; /* Rende i bottoni elementi blocco */
+  width: 100%; /* Occupa tutta la larghezza del contenitore */
+  padding: 10px;
+  text-align: center;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 5px; /* Aggiunge spazio tra i bottoni */
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s; /* Aggiunge un'animazione di transizione */
+}
+
+.button:hover {
+  background-color: #2980b9; /* Cambia il colore al passaggio del mouse */
+}
+
+.space{
+  height: 150px;
+}
+

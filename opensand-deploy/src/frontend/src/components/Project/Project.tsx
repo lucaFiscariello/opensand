@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 import {Formik} from 'formik';
 import type {FormikProps, FormikHelpers} from 'formik';
@@ -35,6 +35,8 @@ import {combineActions} from '../../utils/actions';
 import type {MutatorCallback} from '../../utils/actions';
 import {getXsdName, isComponentElement, isListElement, isParameterElement, newItem} from '../../xsd';
 import type {Component, Parameter, List} from '../../xsd';
+import Network from '../HomePage/Network';
+import DeployEntitiesButton from './DeployEntitiesButton';
 
 
 interface IEntity {
@@ -57,6 +59,7 @@ const findMachines = (root?: Component, operation?: (l: List, path: string) => v
             if (machinesIndex < 0) { return; }
 
             const machines = platform.element.elements[machinesIndex];
+
             if (isListElement(machines)) {
                 if (operation) {
                     operation(machines.element, `elements.${platformIndex}.element.elements.${machinesIndex}.element`);
@@ -68,6 +71,22 @@ const findMachines = (root?: Component, operation?: (l: List, path: string) => v
     }
 };
 
+const findMachinesName= (root?: Component, operation?: (l: List, path: string) => void): any | undefined => {
+    if (root) {
+        const platformIndex = root.elements.findIndex((e) => isComponentElement(e) && e.element.id === "platform");
+        if (platformIndex < 0) { return; }
+
+        const platform = root.elements[platformIndex];
+        if (isComponentElement(platform)) {
+            const machinesIndex = platform.element.elements.findIndex((e) => isListElement(e) && e.element.id === "machines");
+            if (machinesIndex < 0) { return; }
+
+            const machines = platform.element.elements[machinesIndex];
+            return machines.element
+   
+        }
+    }
+};
 
 const findEntities = (root?: Component, operation?: (l: List, path: string) => void): List | undefined => {
     if (root) {
@@ -80,6 +99,7 @@ const findEntities = (root?: Component, operation?: (l: List, path: string) => v
             if (entitiesIndex < 0) { return; }
 
             const entities = configuration.element.elements[entitiesIndex];
+
             if (isListElement(entities)) {
                 if (operation) {
                     operation(entities.element, `elements.${configurationIndex}.element.elements.${entitiesIndex}.element`);
@@ -101,6 +121,7 @@ const applyOnMachinesAndEntities = (root: Component, operation: (l: List, path: 
 const Project: React.FC<Props> = (props) => {
     const model = useSelector((state) => state.model.model);
     const source = useSelector((state) => state.ping.source);
+
     const {name} = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -251,6 +272,15 @@ const Project: React.FC<Props> = (props) => {
         }
     }, [dispatch, name, source, pingDestination]);
 
+
+    let machs = findMachinesName(model?.root)
+    let nameMachs = []
+
+    if(machs)
+        for(const element of machs.elements)
+            nameMachs.push(element.elements[1].element.value)
+
+       
     return (
         <React.Fragment>
             <Toolbar>
@@ -263,9 +293,12 @@ const Project: React.FC<Props> = (props) => {
                         <RootComponent form={formik} actions={actions} xsd="project.xsd" autosave />
                     )}
                 </Formik>
+                
             )}
             {model != null && (<>
-                <Box textAlign="center" marginTop="3em" marginBottom="3px">
+                <Box textAlign="center">
+                    <Network nameMachines={nameMachs}></Network>
+                    <DeployEntitiesButton project={model.root} />
                     <LaunchEntitiesButton project={model.root} />
                     <StopEntitiesButton project={model.root} />
                     <SpacedButton
@@ -286,6 +319,7 @@ const Project: React.FC<Props> = (props) => {
                 <DeployEntityDialog />
                 <PingDialog onValidate={handlePing} />
                 <PingResultDialog />
+               
             </>)}
             {handleNewEntityCreate != null && entityName != null && entityType != null && (
                 <NewEntityDialog
