@@ -18,6 +18,8 @@ import PingResultDialog from './PingResultDialog';
 import LaunchEntitiesButton from './LaunchEntitiesButton';
 // import StatusEntitiesButton from './StatusEntitiesButton';
 import StopEntitiesButton from './StopEntitiesButton';
+import  "../HomePage/style.css"
+
 
 import {
     deleteXML,
@@ -329,6 +331,7 @@ const Project: React.FC<Props> = (props) => {
                     onClose={handleClose}
                 />
             )}
+            <div className='space'></div>
         </React.Fragment>
     );
 };

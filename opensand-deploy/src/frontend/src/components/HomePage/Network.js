@@ -119,9 +119,40 @@ function AggiungiSat() {
         nodes: [...dataState.nodes, newNode],
       });
 
-    console.log(dataState)
 
 };
+
+function AggiungiGW() {
+  let newNode = {"id":"GW1","name":"","svg":urlGW,"size":800,"x":100,"y":100}
+  setData({
+      ...dataState,
+      nodes: [...dataState.nodes, newNode],
+    });
+
+
+};
+
+function AggiungiST() {
+  let newNode = {"id":"ST","name":"","svg":urlST,"size":800,"x":100,"y":100}
+  setData({
+      ...dataState,
+      nodes: [...dataState.nodes, newNode],
+    });
+
+
+};
+
+
+function AggiungiNet() {
+  let newNode = {"id":"Net1","name":"","svg":urlNET,"size":800,"x":100,"y":100}
+  setData({
+      ...dataState,
+      nodes: [...dataState.nodes, newNode],
+    });
+
+
+};
+
 
   return (
 
@@ -134,9 +165,9 @@ function AggiungiSat() {
         <div className='box-button'>
             <div className='space'></div>
             <button className="button" onClick={AggiungiSat}> Aggiungi SAT</button>
-            <button className="button" onClick={AggiungiSat}> Aggiungi GW</button>
-            <button className="button" onClick={AggiungiSat}> Aggiungi ST</button>
-            <button className="button" onClick={AggiungiSat}> Aggiungi Rete</button>
+            <button className="button" onClick={AggiungiGW}> Aggiungi GW</button>
+            <button className="button" onClick={AggiungiST}> Aggiungi ST</button>
+            <button className="button" onClick={AggiungiNet}> Aggiungi Rete</button>
 
             
      
