@@ -14,6 +14,9 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
+import net from './net.png'
+import sat from './sat.png'
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -57,11 +60,13 @@ BootstrapDialogTitle.propTypes = {
 
 export default function Network(props) {
 
-const urlSat = "https://img.freepik.com/free-vector/flying-satellite-space-cartoon-icon-illustration_138676-2885.jpg?w=826&t=st=1691603349~exp=1691603949~hmac=b093d1fe8532aa428a81cbf8cd68e5d21a2a8e655e94605466e157e7f09b2bb9"
-const urlGW = "https://img.freepik.com/free-vector/astronomy-isometric-composition-with-image-radar-with-satellite-dish-vector-illustration_1284-66738.jpg?w=826&t=st=1691605220~exp=1691605820~hmac=74f410f3f7b615718779b784fa0bb18963579e0b9c4bb9981f7174d8625afdf7"
-const urlST = "https://cdn-icons-png.flaticon.com/512/718/718378.png"
-const urlNET = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR54J5SezFcHmCgjqlly37Vp-oDfBZ10rbTf3ojDeO2IDDs3R2Yq3Quy0DvXsvSquCNIJ4&usqp=CAU"
+//const urlSat = "https://img.freepik.com/free-vector/flying-satellite-space-cartoon-icon-illustration_138676-2885.jpg?w=826&t=st=1691603349~exp=1691603949~hmac=b093d1fe8532aa428a81cbf8cd68e5d21a2a8e655e94605466e157e7f09b2bb9"
+//const urlNET = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR54J5SezFcHmCgjqlly37Vp-oDfBZ10rbTf3ojDeO2IDDs3R2Yq3Quy0DvXsvSquCNIJ4&usqp=CAU"
 
+const urlSat = sat
+const urlGW = sat
+const urlST = sat
+const urlNET = net
 const node = []
 const links = []
 
@@ -69,7 +74,7 @@ const data = {"links":[],"nodes":[]}
 const netName = "NET"
 
 for(let name of props.nameMachines){
-  let templateNode = {"id":"","name":"","svg":"","size":800}
+  let templateNode = {"id":"","name":"","svg":"","size":400,"labelPosition": 'bottom'}
   let linkTemplate = {"source":netName,"target":name}
 
   templateNode.id = name
@@ -80,7 +85,7 @@ for(let name of props.nameMachines){
   links.push(linkTemplate)
 }
 
-let templateNode = {"id":"","name":"","svg":"","size":800}
+let templateNode = {"id":"","name":"","svg":"","size":400}
 templateNode.id = netName
 templateNode.name = netName
 templateNode.svg = urlNET
@@ -113,7 +118,7 @@ const onClickNode  = (clickedNodeId) => {
 
 
 function AggiungiSat() {
-    let newNode = {"id":"SAT1","name":"","svg":"https://img.freepik.com/free-vector/flying-satellite-space-cartoon-icon-illustration_138676-2885.jpg?w=826&t=st=1691603349~exp=1691603949~hmac=b093d1fe8532aa428a81cbf8cd68e5d21a2a8e655e94605466e157e7f09b2bb9","size":800,"x":100,"y":100}
+    let newNode = {"id":"SAT1","name":"","svg":urlSat,"size":400,"x":100,"y":100}
     setData({
         ...dataState,
         nodes: [...dataState.nodes, newNode],
@@ -123,7 +128,7 @@ function AggiungiSat() {
 };
 
 function AggiungiGW() {
-  let newNode = {"id":"GW1","name":"","svg":urlGW,"size":800,"x":100,"y":100}
+  let newNode = {"id":"GW1","name":"","svg":urlGW,"size":400,"x":100,"y":100}
   setData({
       ...dataState,
       nodes: [...dataState.nodes, newNode],
@@ -133,7 +138,7 @@ function AggiungiGW() {
 };
 
 function AggiungiST() {
-  let newNode = {"id":"ST","name":"","svg":urlST,"size":800,"x":100,"y":100}
+  let newNode = {"id":"ST","name":"","svg":urlST,"size":400,"x":100,"y":100}
   setData({
       ...dataState,
       nodes: [...dataState.nodes, newNode],
@@ -144,7 +149,7 @@ function AggiungiST() {
 
 
 function AggiungiNet() {
-  let newNode = {"id":"Net1","name":"","svg":urlNET,"size":800,"x":100,"y":100}
+  let newNode = {"id":"Net1","name":"","svg":urlNET,"size":400,"x":100,"y":100}
   setData({
       ...dataState,
       nodes: [...dataState.nodes, newNode],
@@ -167,9 +172,7 @@ function AggiungiNet() {
             <button className="button" onClick={AggiungiSat}> Aggiungi SAT</button>
             <button className="button" onClick={AggiungiGW}> Aggiungi GW</button>
             <button className="button" onClick={AggiungiST}> Aggiungi ST</button>
-            <button className="button" onClick={AggiungiNet}> Aggiungi Rete</button>
-
-            
+            <button className="button" onClick={AggiungiNet}> Aggiungi Rete</button>   
      
         <BootstrapDialog
           onClose={handleClose}
