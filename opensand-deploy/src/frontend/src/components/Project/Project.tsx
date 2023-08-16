@@ -114,6 +114,7 @@ const findEntities = (root?: Component, operation?: (l: List, path: string) => v
 };
 
 
+
 const applyOnMachinesAndEntities = (root: Component, operation: (l: List, path: string) => void) => {
     findMachines(root, operation);
     findEntities(root, operation);
@@ -130,7 +131,12 @@ const Project: React.FC<Props> = (props) => {
 
     const [handleNewEntityCreate, setNewEntityCreate] = React.useState<((entity: string, entityType: string) => void) | undefined>(undefined);
     const [pingDestination, setPingDestination] = React.useState<string | null>(null);
+    const [machs,setMachs] = useState([]);
+    const [nameMachs,setMachsName] = useState<string[]>([]);
+    const [refresh,setRefresh] = useState(true);
 
+
+    
     const handleOpen = React.useCallback((root: Component, mutator: MutatorCallback, submitForm: SaveCallback) => {
         setNewEntityCreate(() => (entity: string, entityType: string) => {
             const addNewEntity = (l: List) => {
@@ -144,7 +150,7 @@ const Project: React.FC<Props> = (props) => {
                         }
                     });
                 });
-
+                
                 if (hasError) {
                     dispatch(newError(`Entity ${entity} already exists in ${l.name}`));
                     return;
@@ -168,13 +174,17 @@ const Project: React.FC<Props> = (props) => {
                     return newEntity;
                 }
             };
+
             applyOnMachinesAndEntities(root, (l: List, p: string) => mutator(l, p, addNewEntity));
             submitForm();
+
         });
     }, [dispatch]);
 
+
     const handleClose = React.useCallback(() => {
         setNewEntityCreate(undefined);
+        setRefresh(!refresh)
     }, []);
 
     const handleSubmit = React.useCallback((values: Component, helpers: FormikHelpers<Component>) => {
@@ -182,6 +192,7 @@ const Project: React.FC<Props> = (props) => {
             dispatch(updateProject({project: name, root: values}));
         }
         helpers.setSubmitting(false);
+        
     }, [dispatch, name]);
 
     const handleDeleteEntity = React.useCallback((root: Component, mutator: (l: List, path: string) => void) => {
@@ -227,8 +238,24 @@ const Project: React.FC<Props> = (props) => {
         );
     }, [model, name, handleDownload]);
 
+
+    const updateName = (model: { root: any; } | undefined) =>{
+        let Allmachs = findMachinesName(model?.root)
+        let AllnameMachs =[]
+
+        if(Allmachs)
+            for(const element of Allmachs.elements)
+                AllnameMachs.push(element.elements[1].element.value)
+
+        setMachs(Allmachs)
+        setMachsName(AllnameMachs)
+
+    }
+
     const [entityName, entityType]: [Parameter | undefined, Parameter | undefined] = React.useMemo(() => {
         const entity: [Parameter | undefined, Parameter | undefined] = [undefined, undefined];
+
+        updateName(model)
 
         findMachines(model?.root, (machines: List) => {
             machines.pattern.elements.forEach((p) => {
@@ -238,9 +265,9 @@ const Project: React.FC<Props> = (props) => {
                 }
             });
         });
-
+        
         return entity;
-    }, [model]);
+    }, [model,refresh]);
 
     const actions = React.useMemo(() => combineActions([
         {path: ['platform', 'machines'], actions: {onCreate: handleOpen, onDelete: handleDeleteEntity}},
@@ -274,15 +301,7 @@ const Project: React.FC<Props> = (props) => {
         }
     }, [dispatch, name, source, pingDestination]);
 
-
-    let machs = findMachinesName(model?.root)
-    let nameMachs = []
-
-    if(machs)
-        for(const element of machs.elements)
-            nameMachs.push(element.elements[1].element.value)
-
-       
+          
     return (
         <React.Fragment>
             <Toolbar>
@@ -290,16 +309,24 @@ const Project: React.FC<Props> = (props) => {
                 <Typography variant="h6">{name}</Typography>
             </Toolbar>
             {model != null && (
-                <Formik enableReinitialize initialValues={model.root} onSubmit={handleSubmit}>
-                    {(formik: FormikProps<Component>) => (
-                        <RootComponent form={formik} actions={actions} xsd="project.xsd" autosave />
-                    )}
+            
+            <div>
+                <Formik  enableReinitialize initialValues={model.root} onSubmit={handleSubmit}>
+                    {(formik: FormikProps<Component>) => {
+                        return <RootComponent form={formik} actions={actions} xsd="project.xsd" autosave />                    
+                    }}
                 </Formik>
-                
+
+                <Formik  initialValues={model.root} onSubmit={handleSubmit}>
+                {(formik: FormikProps<Component>) => {
+                    return <Network nameMachines={nameMachs} form={formik} list={machs} actions={{onCreate: handleOpen, onDelete: handleDeleteEntity}} ></Network>                    
+                }}
+                </Formik>
+            </div>
+                 
             )}
             {model != null && (<>
                 <Box textAlign="center">
-                    <Network nameMachines={nameMachs}></Network>
                     <DeployEntitiesButton project={model.root} />
                     <LaunchEntitiesButton project={model.root} />
                     <StopEntitiesButton project={model.root} />

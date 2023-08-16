@@ -60,7 +60,7 @@ const NewEntityDialog = (props: Props) => {
                         <DialogTitle>Add a new Entity in your Platform</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Please give a name and select the role of your machine.
+                                Please give a name and select the role of your machine!
                             </DialogContentText>
                             <Parameter parameter={formik.values.name} prefix="name" form={formik} actions={noActions} autosave={false} />
                             <Parameter parameter={formik.values.type} prefix="type" form={formik} actions={noActions} autosave={false} />

@@ -16,6 +16,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import net from './net.png'
 import sat from './sat.png'
+import swt from './switch.png'
+import {useListMutators} from '../../utils/hooks';
+
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -67,11 +70,13 @@ const urlSat = sat
 const urlGW = sat
 const urlST = sat
 const urlNET = net
+const urlSwt = swt
 const node = []
 const links = []
 
 const data = {"links":[],"nodes":[]}
 const netName = "NET"
+
 
 for(let name of props.nameMachines){
   let templateNode = {"id":"","name":"","svg":"","size":400,"labelPosition": 'bottom'}
@@ -98,6 +103,8 @@ data.links = links
 const [dataState, setData] = useState(data);
 const [open, setOpen] = React.useState(false);
 const [nodeName, setnodeName] = useState("");
+const [tooltip, setTooltip] = useState('');
+const [addListItem, removeListItem] = useListMutators(props.list, props.actions, props.form, "elements.0.element.elements.1.element");
 
 
 const handleClickOpen = () => {
@@ -108,7 +115,8 @@ const handleClose = () => {
 };
   
 const onDoubleClickNode  = (clickedNodeId) => {
-    console.log(clickedNodeId);
+  handleClickOpen()
+  setnodeName(clickedNodeId)
 };
 
 const onClickNode  = (clickedNodeId) => {
@@ -117,14 +125,17 @@ const onClickNode  = (clickedNodeId) => {
 };
 
 
+const onMouseOverNode = (nodeId, event) => {
+  setTooltip(`Mostra configurazioni del nodo ${nodeId}`);
+};
+
+const onMouseOutNode = () => {
+  setTooltip('');
+};
+
+
 function AggiungiSat() {
-    let newNode = {"id":"SAT1","name":"","svg":urlSat,"size":400,"x":100,"y":100}
-    setData({
-        ...dataState,
-        nodes: [...dataState.nodes, newNode],
-      });
-
-
+      addListItem()
 };
 
 function AggiungiGW() {
@@ -158,13 +169,23 @@ function AggiungiNet() {
 
 };
 
+function Aggiungiswitch() {
+  let newNode = {"id":"Switch","name":"","svg":urlSwt,"size":400,"x":100,"y":100}
+  setData({
+      ...dataState,
+      nodes: [...dataState.nodes, newNode],
+    });
+
+
+};
+
 
   return (
 
     <div className="main-container">
         
         <div className='white-box'>
-            <Graph id="graph" config={config} data={dataState} onDoubleClickNode={onDoubleClickNode} onClickNode={onClickNode}/>
+            <Graph id="graph" config={config} data={dataState} onDoubleClickNode={onDoubleClickNode} onClickNode={onClickNode} onMouseOutNode={onMouseOutNode} onMouseOverNode={onMouseOverNode}/>
         </div>
 
         <div className='box-button'>
@@ -173,6 +194,9 @@ function AggiungiNet() {
             <button className="button" onClick={AggiungiGW}> Aggiungi GW</button>
             <button className="button" onClick={AggiungiST}> Aggiungi ST</button>
             <button className="button" onClick={AggiungiNet}> Aggiungi Rete</button>   
+            <button className="button" onClick={Aggiungiswitch}> Aggiungi Switch</button> 
+            {tooltip && <div>{tooltip}</div>}
+
      
         <BootstrapDialog
           onClose={handleClose}
@@ -180,7 +204,7 @@ function AggiungiNet() {
           open={open}
         >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {nodeName}
+          Modifica configurazioni di {nodeName}
         </BootstrapDialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom>
@@ -206,6 +230,8 @@ function AggiungiNet() {
       </BootstrapDialog>
     
         </div>
+      
+
     </div>
     
   );
