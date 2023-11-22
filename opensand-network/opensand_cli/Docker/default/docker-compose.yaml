@@ -1,0 +1,95 @@
+#!/bin/bash
+# Copyright (c) 2023 RomARS
+# The code was developed by Mattia Quadrini <quadrini@romars.tech>
+
+
+###############################################################################
+#                                 /!\ WARNING /!\
+# Docker-compose may not apply the 'privileged = true' option to the dockers.
+# This option is required to create and set up the 'TAP interface'. For this 
+# reason manual 'docker' commands may be required.
+#
+###############################################################################
+
+
+version: "2.6"
+services:
+  os-sat:
+    image: romars/opensand:dev
+    volumes:
+      - "./opensand-sat:/root/"
+    networks:
+      lan_sat:
+        ipv4_address: 192.168.0.1
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - MAC_ADMIN
+    command: "bash ./autostart.sh"
+
+  os-gw:
+    image: romars/opensand:dev
+    volumes:
+      - "./opensand-gw:/root/"
+    networks:
+      lan_sat:
+        ipv4_address: 192.168.0.3
+      lan_gw:
+        ipv4_address: 10.20.0.20
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - MAC_ADMIN
+    privileged: true
+    command: "bash ./autostart.sh"
+    depends_on:
+      - os-sat
+     
+
+  os-st:
+    image: romars/opensand:dev
+    volumes:
+      - "./opensand-st:/root/"
+    networks:
+      lan_sat:
+        ipv4_address: 192.168.0.2
+      lan_st:
+        ipv4_address: 10.10.0.1
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - MAC_ADMIN
+    privileged: true
+    command: "bash ./autostart.sh"
+    depends_on:
+      - os-sat
+      
+    
+networks:
+  lan_sat:
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
+          ip_range: 192.168.0.128/25
+  lan_st:
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.0.0/24
+          ip_range: 10.10.0.128/25
+          
+  lan_gw:
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.20.0.0/24
+          ip_range: 10.20.0.128/25
+          
+
