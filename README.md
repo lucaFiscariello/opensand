@@ -420,6 +420,12 @@ La classe *test.py* nella root del repository mostra come è possibile usare gli
 
 # Kypo
 Per l'installazione seguire la guida a https://gitlab.ics.muni.cz/muni-kypo-crp/devops/kypo-lite. Per creare una demo seguire la guida https://www.youtube.com/watch?v=9F-m1YDoRtY&t=1003s a partire dal minuto 18.
+Alcuni dettagli utili:
+- Modifica del file yaml :  git clone -q --bare https://github.com/lucaFiscariello/kypo-opensand.git /repos/lucaFiscariello/kypo-opensand.git
+- Aggiunta repository dall'interfaccia:  git@git-internal.kypo:/repos/lucaFiscariello/kypo-opensand.git
+- Aggiungi la sandbox da Definition
+- Aggiungi Pool
+- Lancia Pool
 
 
 
